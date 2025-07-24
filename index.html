@@ -2,18 +2,192 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Keyga Prompt Generator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <title>76 Prompt Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      color: #111827;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      margin-top: 8px;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    textarea {
+      min-height: 100px;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #3b82f6;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      color: white;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    #output {
+      background-color: #f3f4f6;
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      margin-top: 20px;
+      font-family: 'Courier New', monospace;
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <img src="assets/logo.png" alt="Keyga Logo" class="logo" />
-    <h1>Keyga Prompt Generator</h1>
-    <div id="app">
-      <!-- Generator UI will be rendered here -->
+
+<div class="container">
+  <div class="card">
+    <h1>🎨 76 Prompt Generator</h1>
+
+    <label for="lang">🌐 Bahasa / Language</label>
+    <select id="lang">
+      <option value="id">Bahasa Indonesia</option>
+      <option value="en">English</option>
+    </select>
+
+    <label for="module">📦 Modul Prompt</label>
+    <select id="module">
+      <option value="karakter">Bengkel Karakter AI</option>
+      <option value="ide">Mesin Ide & Editor Naskah</option>
+      <option value="storyboard">Papan Cerita Sinematik</option>
+      <option value="kit">Kit Siaran Ajaib</option>
+    </select>
+
+    <label for="input1">📝 Masukkan Deskripsi Karakter / Cerita / Judul</label>
+    <textarea id="input1" placeholder="Contoh: Karakter anak robot bernama Bolt yang bisa membaca pikiran..."></textarea>
+
+    <div class="buttons">
+      <button onclick="generatePrompt()">🎯 Generate Prompt</button>
+      <button onclick="exportPrompt('txt')">⬇️ Export .txt</button>
+      <button onclick="exportPrompt('json')">⬇️ Export .json</button>
     </div>
-    <script src="script.js"></script>
+
+    <div id="output"></div>
   </div>
+</div>
+
+<script>
+let currentPrompt = "";
+
+function generatePrompt() {
+  const lang = document.getElementById("lang").value;
+  const module = document.getElementById("module").value;
+  const input1 = document.getElementById("input1").value.trim();
+  let prompt = "";
+
+  const content = {
+    karakter: {
+      id: Buat desain karakter mainan berdasarkan deskripsi berikut: ${input1}. Karakter harus memiliki fitur yang konsisten (rambut, mata, pakaian, warna) dan cocok untuk berbagai lini produk mainan. Gunakan gaya Pixar atau 3D.,
+      en: Create a stylized toy character design based on the following description: ${input1}. Ensure consistent features (hair, eyes, clothing, color palette) and make it suitable for multiple toy lines. Use Pixar/3D style.
+    },
+    ide: {
+      id: Buat 3 ide cerita kreatif berdasarkan karakter berikut: ${input1}. Setiap ide harus punya pesan moral, konflik, dan latar yang imajinatif.
+Tambahkan saran perbaikan naskah.,
+      en: Generate 3 creative story ideas based on this character: ${input1}. Each idea should include a moral message, conflict, and imaginative setting. Suggest improvements for a script.
+    },
+    storyboard: {
+      id: Uraikan adegan ini menjadi 3 frame storyboard: "${input1}". Sertakan sudut kamera, ekspresi karakter, latar belakang, dan elemen audio. Referensi gaya: Ghibli.,
+      en: Break down this scene into 3 storyboard frames: "${input1}". Include camera angle, character expression, background details, and audio cues. Style ref: Ghibli/DreamWorks.
+    },
+    kit: {
+      id: Buat aset YouTube lengkap untuk episode berjudul: "${input1}". Sertakan: judul SEO, deskripsi 200 karakter, 10 tagar, deskripsi thumbnail (emosi, aksi, gaya), dan 1 post komunitas.,
+      en: Generate full YouTube assets for the episode titled: "${input1}". Include: SEO title, 200-char description, 10 hashtags, thumbnail prompt (emotion, action, style), and 1 community post idea.
+    }
+  };
+
+  prompt = content[module][lang];
+  currentPrompt = prompt;
+  document.getElementById("output").innerText = prompt;
+}
+
+function exportPrompt(type) {
+  if (!currentPrompt) return alert("Generate prompt dulu!");
+  const blob = new Blob(
+    [type === 'json' ? JSON.stringify({ prompt: currentPrompt }, null, 2) : currentPrompt],
+    { type: type === 'json' ? 'application/json' : 'text/plain' }
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = 76prompt.${type};
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
 </body>
 </html>
